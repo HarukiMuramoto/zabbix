@@ -1,0 +1,20 @@
+- hosts: 54.64.133.2
+  remote_user: ec2-user
+  sudo: yes
+  tasks:
+  - name: python mysql install
+    command: yum install -y MySQL-python
+
+  - name: create database
+    mysql_db: name=zabbix state=present encoding=utf8
+
+  - name: create database user
+    mysql_user: name=zabbix password=8apDev68 priv=zabbix.*:ALL state=present
+
+  - name: schema_import
+    command: mysql -uroot zabbix < /usr/share/doc/zabbix-server-mysql-*/create/schema.sql
+    command: mysql -uroot zabbix < /usr/share/doc/zabbix-server-mysql-*/create/images.sql
+    command: mysql -uroot zabbix < /usr/share/doc/zabbix-server-mysql-*/create/data.sql
+
+  - name: "conf"
+    lineinfile: dest=/etc/zabbix/zabbix_server.conf regexp=^# DBPassword=  line=DBPassword=8apDev68

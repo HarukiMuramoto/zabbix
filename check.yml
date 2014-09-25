@@ -1,0 +1,14 @@
+ tasks:
+  - include: RedHat.yml
+    when: ansible_os_family in [ "CentOS" ]
+  - include: Debian.yml
+    when: ansible_os_family in [ "Ubuntsu" ]
+  - name: yum update bash
+    command: yum -y update bash
+    when: ansible_distribution in [ 'CentOS', 'Red Hat Enterprise Linux' ]
+ 
+  - name: apt update bash
+    command: apt-get update
+  -name: apt upgrade bash
+   command: apt-get --only-upgrade install bash
+    when: ansible_distribution in [ 'Ubuntu' ]

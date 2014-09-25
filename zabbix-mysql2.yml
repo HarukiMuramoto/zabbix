@@ -1,0 +1,12 @@
+- hosts: 54.64.193.153
+  remote_user: ec2-user
+  sudo: yes
+  tasks:
+  - name: "conf"
+    lineinfile: dest=/etc/zabbix/zabbix_server.conf regexp='^# DBPassword=' line=DBPassword=8apDev68
+  - name: "php_timezone"
+    lineinfile: dest=/etc/php.ini regexp='^;date.timezone =' line='date.timezone = Asia/Tokyo'
+  - name: "apache-restart"
+    command: service httpd restart
+  - name: "zabbix-start"
+    command: service zabbix-server start
