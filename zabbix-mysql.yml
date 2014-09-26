@@ -9,7 +9,7 @@
     mysql_db: name=zabbix state=present encoding=utf8
 
   - name: create database user
-    mysql_user: name=zabbix password=8apDev68 priv=zabbix.*:ALL state=present
+    mysql_user: name=zabbix password=XXXXXXXX priv=zabbix.*:ALL state=present
 
   - name: schema_import
     shell: mysql -uroot zabbix < /usr/share/doc/zabbix-server-mysql-2.2.6/create/schema.sql
@@ -23,4 +23,4 @@
     shell: mysql -uroot zabbix < /usr/share/doc/zabbix-server-mysql-2.2.6/create/data.sql
     ignore_errors: True
   - name: "conf"
-    lineinfile: dest=/etc/zabbix/zabbix_server.conf regexp='^# DBPassword='  line=DBPassword=8apDev68
+    lineinfile: dest=/etc/zabbix/zabbix_server.conf regexp='^# DBPassword='  line=DBPassword=XXXXXXXX
