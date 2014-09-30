@@ -1,0 +1,23 @@
+- hosts: 54.64.193.21
+  remote_user: ec2-user
+  sudo: yes
+  tasks:
+  - name: repo download
+    shell: curl http://download.opensuse.org/repositories/home:/fengshuo:/zeromq/CentOS_CentOS-6/home:fengshuo:zeromq.repo > /etc/yum.repos.d/zeromq.repo
+
+  - name: install package
+    yum: pkg={{item}} state=installed
+    with_items:
+      - zeromq
+      - zeromq-devel
+      - python-devel
+    ignore_errors: True
+
+  - name: pip install
+    command: easy_install pip
+
+  - name: python module install
+    shell: pip install apache-libcloud==0.13.2 zabbix-api pyzmq psphere python-daemon==1.6 configobj
+
+  - name: add python module
+    command: pip install ordereddict argparse boto

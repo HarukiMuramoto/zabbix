@@ -1,0 +1,29 @@
+- hosts: 54.64.193.21
+  remote_user: ec2-user
+  sudo: yes
+  tasks:
+  - name: ordereddict install
+    command: yum install python-ordereddict --enablerepo=epel
+
+  - name: Tornado download
+    command: wget https://github.com/downloads/liftoff/GateOne/tornado-2.4-1.noarch.rpm
+
+  - name: tornado install
+    command: rpm -Uvh tornado-2.4-1.noarch.rpm
+    ignore_errors: True
+
+  - name: gateone install
+    command: wget https://github.com/downloads/liftoff/GateOne/gateone-1.1-1.noarch.rpm
+
+  - name: gateone install
+    command: rpm -Uvh gateone-1.1-1.noarch.rpm
+    ignore_errors: True
+
+  - name: first setting
+    shell: /opt/gateone/gateone.py --auth=api --origins="http://zabbix-server-frontend/"
+
+  - name: secound setting
+    command: /opt/gateone/gateone.py --new_api_key
+
+  - name: gateone start
+    command: service gateone start

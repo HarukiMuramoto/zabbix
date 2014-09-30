@@ -1,4 +1,4 @@
-- hosts: 54.64.133.2
+- hosts: 54.64.207.57
   remote_user: ec2-user
   sudo: yes
   tasks:
@@ -42,3 +42,39 @@
 
   - name: ensure mysqld is running and enabled
     service: name=mysqld state=started enabled=yes
+
+  - name: python mysql install
+    command: yum install -y MySQL-python
+
+  - name: create database
+    mysql_db: name=zabbix state=present encoding=utf8
+
+  - name: create database user
+    mysql_user: name=zabbix password={{ dbpass }} priv=zabbix.*:ALL state=present
+
+  - name: schema_import
+    shell: mysql -uroot zabbix < /usr/share/doc/zabbix-server-mysql-2.2.6/create/schema.sql
+    ignore_errors: True
+
+  - name: image_import
+    shell: mysql -uroot zabbix < /usr/share/doc/zabbix-server-mysql-2.2.6/create/images.sql
+    ignore_errors: True
+
+  - name: data_import
+    shell: mysql -uroot zabbix < /usr/share/doc/zabbix-server-mysql-2.2.6/create/data.sql
+    ignore_errors: True
+
+  - name: "conf"
+    lineinfile: dest=/etc/zabbix/zabbix_server.conf regexp='^# DBPassword='  line=DBPassword={{ dbpass}}
+
+  - name: "conf"
+    lineinfile: dest=/etc/zabbix/zabbix_server.conf regexp='^# DBPassword=' line=DBPassword={{ dbpass }}
+
+  - name: "php_timezone"
+    lineinfile: dest=/etc/php.ini regexp='^;date.timezone =' line='date.timezone = Asia/Tokyo'
+
+  - name: "apache-restart"
+    command: service httpd restart
+
+  - name: "zabbix-start"
+    command: service zabbix-server start
